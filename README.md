@@ -1,9 +1,6 @@
 # Basic-Neural-Nerwork
 
-Prueba de creación y modificación de repositorios
-Probando a copiar un repositorio usando git
+La primera red neuronal marcada como red\_prueba1.plk se entrenó con net.SGD( training\_data, 15, 50, 0.5, test\_data=test\_data)
 
-
-
-probando a hacer un cambio
+mientras que la segunda red, marcada como red\_prueba2.plk, se entrenó con dos set de épocas net.SGD( training\_data, 15, 30, 0.1, test\_data=test\_data), se guardó la red y se siguió entrenando con net.SGD( training\_data, 15, 50, 0.5, test\_data=test\_data)
 
