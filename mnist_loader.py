@@ -11,6 +11,8 @@ function usually called by our neural network code.
 #### Libraries
 # Standard library
 #import cPickle
+import os
+os.chdir(r"C:\Users\lalo_\.spyder-py3\ARCHIVOS DE TRABAJO\RepoClon")
 import pickle
 import gzip
 
@@ -40,7 +42,7 @@ def load_data():
     That's done in the wrapper function ``load_data_wrapper()``, see
     below.
     """
-    f = gzip.open('../data/mnist.pkl.gz', 'rb')
+    f = gzip.open(r"C:\Users\lalo_\.spyder-py3\ARCHIVOS DE TRABAJO\RepoClon\mnist.pkl.gz", 'rb')
     training_data, validation_data, test_data = pickle.load(f,encoding='bytes')
     f.close()
     return (training_data, validation_data, test_data)
