@@ -1,5 +1,5 @@
 import os
-os.chdir(r"C:\Users\lalo_\.spyder-py3\ARCHIVOS DE TRABAJO\RepoClon")
+os.chdir(r"C:\Users\lalo_\.spyder-py3\ARCHIVOS DE TRABAJO\RepoClon\RED_NEURONAL_Y_MODULOS")
 
 #%%
 import mnist_loader
@@ -22,7 +22,7 @@ plt.imshow(im) # la visualizamos
 plt.show()
 v=np.reshape(im,(784,1)) #La reacomodamos como matriz de (784,1) para poderla meter a la red
 
-imtest=imread('Mitres.jpg') #Leemos nuestra imagen
+imtest=imread('Midos.jpg') #Leemos nuestra imagen
 plt.imshow(imtest) #La visualizamos
 imtest=np.reshape(imtest,(784,3)) # La convertimos en vector
 #Convertimos a blanco y negro la imagen:
