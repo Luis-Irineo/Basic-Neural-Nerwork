@@ -1,5 +1,5 @@
 import os
-os.chdir(r"C:\Users\lalo_\.spyder-py3\ARCHIVOS DE TRABAJO\RepoClon\RED_NEURONAL_Y_MODULOS")
+os.chdir(r"C:\Users\lalo_\.spyder-py3\ARCHIVOS DE TRABAJO\RepoClon")
 
 #%%
 import mnist_loader
