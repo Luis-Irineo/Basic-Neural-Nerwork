@@ -41,8 +41,11 @@ class Network(object):
         ever used in computing the outputs from later layers."""
         self.num_layers = len(sizes)
         self.sizes = sizes
-        self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
-        self.weights = [np.random.randn(y, x)
+        
+        #Change in the w, and b initialization
+        sigma = 1/self.sizes[0]
+        self.biases = sigma*[np.random.randn(y, 1) for y in sizes[1:]]
+        self.weights = sigma*[np.random.randn(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
 
     def feedforward(self, a):
@@ -56,7 +59,7 @@ class Network(object):
             z = np.dot(w, a) + b
             zs.append(z)
             
-            # Use softmax only for the output layer
+            # Use of softmax for output layer
             if i == len(self.weights) - 1:
                 a = self.soft_max(z)
             else:
@@ -128,6 +131,7 @@ class Network(object):
             activation = sigmoid(z)
             activations.append(activation)
         
+        # Simplified use of softmax for output layer
         activations[-1] = self.soft_max(zs[-1])
         
         # backward pass
@@ -168,7 +172,9 @@ class Network(object):
         \partial a for the output activations."""
         return (output_activations-y)
     
+    
     def soft_max(self,last_activation):
+        """Definition of the soft max function acounting for overflowing"""
         shifted_z = last_activation - np.max(last_activation)
         exp_value = np.exp(shifted_z)
         sum_exp_value = np.sum(exp_value)
