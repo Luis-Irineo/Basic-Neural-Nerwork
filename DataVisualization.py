@@ -7,7 +7,7 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.image import imread
-import network
+import network as net
 from PIL import Image
 
 #Seleccionamos la red
@@ -61,3 +61,9 @@ print(max[0]) #predicción de la red
 # max = np.where(a1 == np.amax(a1))
 # print("La red reconoce la imagen como un:")
 # print(max[0])
+#%%
+
+imtest = net.mono_blk("Midos.jpg")
+plt.imshow(imtest) #visualizamos la imagen
+plt.show()
+print(net.evaluation("Midos.jpg"))
