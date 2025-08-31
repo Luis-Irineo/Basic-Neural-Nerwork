@@ -12,9 +12,10 @@ and omits many desirable features.
 #### Libraries
 # Standard library
 import random
-from matplotlib.image import imread
+
 # Third-party libraries
 import numpy as np
+from matplotlib.image import imread
 
 #### Miscellaneous functions
 def sigmoid(z):
@@ -46,10 +47,25 @@ class Network(object):
 
     def feedforward(self, a):
         """Return the output of the network if ``a`` is input."""
-        for b, w in zip(self.biases, self.weights):
-            a = sigmoid(np.dot(w, a)+b)
+        # Store all activations and z-values for backpropagation
+        activations = [a]
+        zs = []
+        
+        # Process all layers except the output layer with sigmoid
+        for i, (b, w) in enumerate(zip(self.biases, self.weights)):
+            z = np.dot(w, a) + b
+            zs.append(z)
+            
+            # Use softmax only for the output layer
+            if i == len(self.weights) - 1:
+                a = self.soft_max(z)
+            else:
+                a = sigmoid(z)
+                
+            activations.append(a)
+        
         return a
-
+    
     def SGD(self, training_data, epochs, mini_batch_size, eta,
             test_data=None):
         """Train the neural network using mini-batch stochastic
@@ -108,12 +124,15 @@ class Network(object):
         zs = [] # list to store all the z vectors, layer by layer
         for b, w in zip(self.biases, self.weights):
             z = np.dot(w, activation)+b
-            zs.append(z)
+            zs.append(z) 
             activation = sigmoid(z)
             activations.append(activation)
+        
+        activations[-1] = self.soft_max(zs[-1])
+        
         # backward pass
-        delta = self.cost_derivative(activations[-1], y) * \
-            sigmoid_prime(zs[-1])
+        delta = self.cost_derivative(activations[-1], y)
+
         nabla_b[-1] = delta
         nabla_w[-1] = np.dot(delta, activations[-2].transpose())
         # Note that the variable l in the loop below is used a little
@@ -139,19 +158,22 @@ class Network(object):
                         for (x, y) in test_data]
         return sum(int(x == y) for (x, y) in test_results)
 
+    def cost_cross_entropy(self,output_activations , y):
+        epsilon = 1e-9
+        return -np.sum(y*np.log(output_activations + epsilon))    
+
     def cost_derivative(self, output_activations, y):
         
         """Return the vector of partial derivatives \partial C_x /
         \partial a for the output activations."""
-        #CHANGING THE COST FUNCTION TO CROSS ENTROPY C = -(y_i*ln(a_i))/n
-        #dC = (y_i/a_i)d(a_i) + ln(a_i)d(y_i)
-        #dC/dz = -(y_i/sig(z) * sig'(z))/n
         return (output_activations-y)
     
     def soft_max(self,last_activation):
-        exp_value = np.exp(last_activation)
+        shifted_z = last_activation - np.max(last_activation)
+        exp_value = np.exp(shifted_z)
         sum_exp_value = np.sum(exp_value)
-        return (exp_value/sum_exp_value)
+        
+        return exp_value/sum_exp_value
     
     def mono_blk(self, image):
         imtest = imread(image) #Leemos nuestra imagen
@@ -159,19 +181,17 @@ class Network(object):
         #Convertimos a blanco y negro la imagen:
         lst = []
         for i in imtest:
-            pix=i[0]*0.2125+i[1]*0.7174+i[2]*0.0721 #transfomamos a escala de grises
-            if(pix<125):
-                pix=255. #Como la hoja es blanca y el papel negro, lo negro lo ponemos con mayor luminosidad
+            pix = i[0]*0.2125+i[1]*0.7174+i[2]*0.0721
+            if(pix<125):    
+                pix=255. 
             else:
-                pix=0. #lo blanco lo ponemos como negro
+                pix = 0. 
             lst.append(pix)
-        imtest=np.array(lst).reshape(28,28) #acomodamos la imagen para poder ver como quedó
-        imtest = (imtest/imtest.max()) #normalizamos
+        imtest=np.array(lst).reshape(28,28) 
+        imtest = (imtest/imtest.max())
         return imtest
-        
-    def evaluation(self,image):
-        imtest = self.mono_blk(image)
-        test = np.reshape(imtest,(784,1))
-        a = self.feedforward(test)
-        p = self.soft_max(a)
-        return p
+    
+    def planar(self, imtest):
+        imtest = self.mono_blk(imtest)
+        imtest = np.reshape(imtest,(784,1))
+        return imtest
