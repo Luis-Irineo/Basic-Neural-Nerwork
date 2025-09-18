@@ -35,7 +35,7 @@ class Network(object):
         self.sizes = sizes
         
         #Cambio en la inicialización de los pesos
-        sigma = 1/self.sizes[0]
+        sigma = 1/np.sqrt(self.sizes[:-2])
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
         self.weights = [sigma*np.random.randn(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
